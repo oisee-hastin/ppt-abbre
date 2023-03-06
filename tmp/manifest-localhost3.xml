@@ -3,17 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
   xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
-  <Id>3d6ab32d-9bd4-485a-9480-7928cfa4fbf4</Id>
+  <Id>2C5EA37C-F4F0-49FF-8077-820600A04E25</Id>
   <Version>1.0.0.0</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Hello Github world L"/>
-  <Description DefaultValue="A simple hello world Office Add-in. K"/>
+  <DisplayName DefaultValue="Hello Local world"/>
+  <Description DefaultValue="A simple hello world Office Add-in."/>
   <IconUrl DefaultValue="https://oisee-hastin.github.io/ppt-abbre/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://oisee-hastin.github.io/ppt-abbre/assets/icon-64.png"/>
-  <!-- <SupportUrl DefaultValue="https://learn.microsoft.com/office/dev/add-ins/overview/office-add-in-code-samples"/> -->
+  <SupportUrl DefaultValue="https://learn.microsoft.com/office/dev/add-ins/overview/office-add-in-code-samples"/>
   <AppDomains>
-    <AppDomain>https://oisee-hastin.github.io/ppt-abbre/</AppDomain>
+    <AppDomain>https://oisee-hastin.github.io/ppt-abbre</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Presentation"/>
@@ -75,12 +75,12 @@
       <bt:ShortStrings>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with the Hello world add-in!"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Contoso Add-in"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Hello world L"/>
-        <bt:String id="TaskpaneButton.SupertipTitle" DefaultValue="Hello world L"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Hello world"/>
+        <bt:String id="TaskpaneButton.SupertipTitle" DefaultValue="Hello world"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded succesfully. Go to the HOME tab and click the 'Hello world' button to get started."/>
-        <bt:String id="TaskpaneButton.SupertipText" DefaultValue="Open the Hello world add-in L"/>
+        <bt:String id="TaskpaneButton.SupertipText" DefaultValue="Open the Hello world add-in"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
