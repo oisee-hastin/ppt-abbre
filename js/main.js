@@ -448,10 +448,7 @@ function filtWords(registedAbbreContents, inputContents) {
                }
                if (allEngWords[k].match(/[a-z]/)) {
                     if (allEngWords[k].match(/[a-z\-]/g).length >= allEngWords[k].length / 2) {
-                         if (
-                              allEngWords[k].match(/[A-Z][a-z\-\/][a-z\-\/]+/) != null &&
-                              allEngWords[k].match(/[A-Z][a-z\-\/][a-z\-\/]+/)[0].length == allEngWords[k].length
-                         ) {
+                         if (allEngWords[k].match(/[A-Z][a-z\-\/][a-z\-\/]+/) != null && allEngWords[k].match(/[A-Z][a-z\-\/][a-z\-\/]+/)[0].length == allEngWords[k].length) {
                          } else {
                               suspectedWords.push(allEngWords[k]);
                          }
@@ -805,7 +802,7 @@ async function sortIgnoreUpperCase(ary) {
 function readAbbreCsvFile() {
      try {
           let xhr = new XMLHttpRequest();
-          xhr.open("GET", "/js/database/abbreListDatabase.csv", false);
+          xhr.open("GET", "https://oisee-hastin.github.io/ppt-abbre/js/database/abbreListDatabase.csv", false);
           xhr.onload = function () {
                let inputTxt = xhr.responseText;
 
