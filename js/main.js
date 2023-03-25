@@ -1,8 +1,9 @@
 Office.onReady();
 let logDataExsit = false;
 let logTags;
-let abbreLogTag, tableLogTag;
+let abbreLogTag, excludeLogTag, tableLogTag;
 let ary_registedAbbreObjIDs = [];
+let ary_excludedAbbreObjIDs = [];
 let ary_registedTableObjIDandContents = [];
 // let abbreCsvFilePath = "";
 
@@ -15,9 +16,11 @@ async function searchRegistObj() {
                logTags = slide0.logTags;
                // try {
                abbreLogTag = slide0.tags.getItemOrNullObject("ABBRELOG");
+               excludeLogTag = slide0.tags.getItemOrNullObject("EXCLUDELOG");
                tableLogTag = slide0.tags.getItemOrNullObject("TABLELOG");
                await context.sync();
                abbreLogTag.load("key, value");
+               excludeLogTag.load("key, value");
                tableLogTag.load("key, value");
                await context.sync();
                if (abbreLogTag.isNullObject) {
@@ -28,6 +31,15 @@ async function searchRegistObj() {
                     console.log("Found abbre log");
                     ary_registedAbbreObjIDs = JSON.parse(abbreLogTag.value);
                     console.log(ary_registedAbbreObjIDs);
+               }
+               if (excludeLogTag.isNullObject) {
+                    slide0.tags.add("EXCLUDELOG", JSON.stringify([]));
+                    await context.sync();
+                    console.log("Add exclude log");
+               } else {
+                    console.log("Found exclude log");
+                    ary_excludedAbbreObjIDs = JSON.parse(excludeLogTag.value);
+                    console.log(ary_excludedAbbreObjIDs);
                }
                if (tableLogTag.isNullObject) {
                     slide0.tags.add("TABLELOG", JSON.stringify([]));
@@ -168,6 +180,68 @@ async function registAbbreObj() {
           await context.sync();
      });
 }
+async function registExcludeObj() {
+     await searchRegistObj();
+     let alt = 0;
+     let ctrl = 0;
+     let shift = 0;
+     try {
+          if (event.altKey == 1) {
+               alt = 1;
+          }
+          if (event.ctrlKey == 1) {
+               ctrl = 1;
+          }
+          if (event.shiftKey == 1) {
+               shift = 1;
+          }
+     } catch (err) {}
+     if (ctrl && alt && shift) {
+          ary_excludedAbbreObjIDs = [];
+          document.getElementById("notificationContents").innerText = "已清空排除物件紀錄";
+     } else {
+          await PowerPoint.run(async (context) => {
+               let slides = context.presentation.getSelectedSlides();
+               slides.load("items");
+               await context.sync();
+               let curSlideID = slides.items[0].id;
+               // console.log(slides.items[0].id);
+               let shapes = context.presentation.getSelectedShapes();
+               let shapeCount = shapes.getCount();
+               shapes.load("items");
+               await context.sync();
+               shapes.items.map((shape) => {
+                    let tmpObj = new Object();
+                    tmpObj.slideID = curSlideID;
+                    tmpObj.shapeID = shape.id;
+                    let checkRegisted = ary_excludedAbbreObjIDs.findIndex((obj) => {
+                         return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
+                    });
+                    if (alt && checkRegisted != -1) {
+                         ary_excludedAbbreObjIDs.splice(checkRegisted, 1);
+                         document.getElementById("notificationContents").innerText = "已刪除既有排除物件";
+                    } else if (!alt && checkRegisted == -1) {
+                         document.getElementById("notificationContents").innerText = "已記錄新排除物件";
+                         ary_excludedAbbreObjIDs.push(tmpObj);
+                    } else if (alt) {
+                         document.getElementById("notificationContents").innerText = "紀錄中無此物件，無法刪除";
+                    } else {
+                         document.getElementById("notificationContents").innerText = "紀錄中已有此物件";
+                    }
+                    console.log(ary_excludedAbbreObjIDs);
+               });
+          });
+     }
+     await PowerPoint.run(async (context) => {
+          $(".toast").toast({ delay: 4000 });
+          $(".toast").toast("show");
+          let slide0 = context.presentation.slides.getItemAt(0);
+          slide0.load("tags");
+          await context.sync();
+          slide0.tags.add("EXCLUDELOG", JSON.stringify(ary_excludedAbbreObjIDs));
+          await context.sync();
+     });
+}
 async function registTableObj() {
      searchRegistObj();
      let alt = 0;
@@ -280,6 +354,9 @@ async function listAbbreofActivePage() {
                let checkAbbreRegisted = ary_registedAbbreObjIDs.findIndex((obj) => {
                     return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
                });
+               let checkExcluded = ary_excludedAbbreObjIDs.findIndex((obj) => {
+                    return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
+               });
                let checkTableRegisted = ary_registedTableObjIDandContents.find((obj) => {
                     return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
                });
@@ -288,6 +365,8 @@ async function listAbbreofActivePage() {
                     if (checkTableRegisted != undefined) {
                          curPageContents += checkTableRegisted.contents;
                          console.log(checkTableRegisted.contents);
+                    } else if (checkExcluded != undefined) {
+                         continue;
                     } else {
                          shapes.items[i].textFrame.textRange.load("text");
                          await context.sync();
