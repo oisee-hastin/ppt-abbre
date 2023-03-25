@@ -360,12 +360,13 @@ async function listAbbreofActivePage() {
                let checkTableRegisted = ary_registedTableObjIDandContents.find((obj) => {
                     return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
                });
-
+               console.log(checkTableRegisted);
+               console.log(checkExcluded);
                try {
                     if (checkTableRegisted != undefined) {
                          curPageContents += checkTableRegisted.contents;
                          console.log(checkTableRegisted.contents);
-                    } else if (checkExcluded != undefined) {
+                    } else if (checkExcluded != -1) {
                          continue;
                     } else {
                          shapes.items[i].textFrame.textRange.load("text");
