@@ -245,69 +245,82 @@ async function registExcludeObj() {
 async function registTableObj() {
      searchRegistObj();
      let alt = 0;
+     let ctrl = 0;
+     let shift = 0;
      try {
           if (event.altKey == 1) {
                alt = 1;
           }
+          if (event.ctrlKey == 1) {
+               ctrl = 1;
+          }
+          if (event.shiftKey == 1) {
+               shift = 1;
+          }
      } catch (err) {}
-     await PowerPoint.run(async (context) => {
-          let slides = context.presentation.getSelectedSlides();
-          slides.load("items");
-          await context.sync();
-          let curSlideID = slides.items[0].id;
+     if (ctrl && alt && shift) {
+          ary_excludedAbbreObjIDs = [];
+          document.getElementById("notificationContents").innerText = "已清空表格物件紀錄";
+     } else {
+          await PowerPoint.run(async (context) => {
+               let slides = context.presentation.getSelectedSlides();
+               slides.load("items");
+               await context.sync();
+               let curSlideID = slides.items[0].id;
 
-          let shapes = context.presentation.getSelectedShapes();
-          let shapeCount = shapes.getCount();
-          if (shapes.getCount() > 0) {
-               alert("一次只能記錄一個物件");
-               return;
-          }
-          shapes.load("items");
-          await context.sync();
-          let tmpObj = new Object();
-          tmpObj.slideID = curSlideID;
-          tmpObj.shapeID = shapes.items[0].id;
-          await Office.context.document.getSelectedDataAsync(
-               "text", // coercionType
-               {
-                    valueFormat: "unformatted", // valueFormat
-                    filterType: "all",
-               }, // filterType
-               function (result) {
-                    // callback
-                    console.log(result.value);
-                    tmpObj.contents = result.value;
-                    //   write('Selected data is: ' + dataValue);
+               let shapes = context.presentation.getSelectedShapes();
+               let shapeCount = shapes.getCount();
+               if (shapes.getCount() > 0) {
+                    alert("一次只能記錄一個物件");
+                    return;
                }
-          );
+               shapes.load("items");
+               await context.sync();
+               let tmpObj = new Object();
+               tmpObj.slideID = curSlideID;
+               tmpObj.shapeID = shapes.items[0].id;
+               await Office.context.document.getSelectedDataAsync(
+                    "text", // coercionType
+                    {
+                         valueFormat: "unformatted", // valueFormat
+                         filterType: "all",
+                    }, // filterType
+                    function (result) {
+                         // callback
+                         // console.log(result.value);
+                         tmpObj.contents = result.value;
+                         //   write('Selected data is: ' + dataValue);
+                    }
+               );
 
-          let checkRegistedID = ary_registedTableObjIDandContents.findIndex((obj) => {
-               return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
+               let checkRegistedID = ary_registedTableObjIDandContents.findIndex((obj) => {
+                    return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
+               });
+               if (alt) {
+                    if (checkRegistedID != -1) {
+                         ary_registedTableObjIDandContents.splice(checkRegistedID, 1);
+                         document.getElementById("notificationContents").innerText = "已刪除既有表格物件";
+                    } else {
+                         document.getElementById("notificationContents").innerText = "紀錄中無此物件，無法刪除紀錄";
+                    }
+               } else {
+                    if (checkRegistedID != -1) {
+                         ary_registedTableObjIDandContents.splice(checkRegistedID, 1);
+                         ary_registedTableObjIDandContents.push(tmpObj);
+                         document.getElementById("notificationContents").innerText = "已更新既有表格物件記錄";
+                    } else {
+                         ary_registedTableObjIDandContents.push(tmpObj);
+                         document.getElementById("notificationContents").innerText = "已記錄新表格物件";
+                    }
+               }
+
+               // console.log(ary_registedTableObjIDandContents.length);
+               // console.log(shape.id);
+               // console.log(shape);
+               // document.getElementById("outcome").innerText = shape.id;
+               await context.sync();
           });
-          if (alt) {
-               if (checkRegistedID != -1) {
-                    ary_registedTableObjIDandContents.splice(checkRegistedID, 1);
-                    document.getElementById("notificationContents").innerText = "已刪除既有表格物件";
-               } else {
-                    document.getElementById("notificationContents").innerText = "紀錄中無此物件，無法刪除紀錄";
-               }
-          } else {
-               if (checkRegistedID != -1) {
-                    ary_registedTableObjIDandContents.splice(checkRegistedID, 1);
-                    ary_registedTableObjIDandContents.push(tmpObj);
-                    document.getElementById("notificationContents").innerText = "已更新既有表格物件記錄";
-               } else {
-                    ary_registedTableObjIDandContents.push(tmpObj);
-                    document.getElementById("notificationContents").innerText = "已記錄新表格物件";
-               }
-          }
-
-          console.log(ary_registedTableObjIDandContents.length);
-          // console.log(shape.id);
-          // console.log(shape);
-          // document.getElementById("outcome").innerText = shape.id;
-          await context.sync();
-     });
+     }
      await PowerPoint.run(async (context) => {
           let slide0 = context.presentation.slides.getItemAt(0);
           slide0.load("tags");
@@ -360,8 +373,8 @@ async function listAbbreofActivePage() {
                let checkTableRegisted = ary_registedTableObjIDandContents.find((obj) => {
                     return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
                });
-               console.log(checkTableRegisted);
-               console.log(checkExcluded);
+               // console.log(checkTableRegisted);
+               // console.log(checkExcluded);
                try {
                     if (checkTableRegisted != undefined) {
                          curPageContents += checkTableRegisted.contents;
@@ -389,7 +402,7 @@ async function listAbbreofActivePage() {
                $(".toast").toast({ delay: 4000 });
                $(".toast").toast("show");
           }
-          console.log(curPageContents);
+          // console.log(curPageContents);
           filtWords(registedAbbreContents, curPageContents);
      });
 }
