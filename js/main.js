@@ -464,7 +464,7 @@ async function listAbbreofAllPages() {
 }
 
 function filtWords(registedAbbreContents, inputContents) {
-     let allEngWords = inputContents.match(/[A-Za-z0-9αβγμ][A-Za-z0-9αβγμ\-\/]*[A-Za-z0-9αβγμ]+/g);
+     let allEngWords = inputContents.replace(/from [A-Za-z]+ [A-Z]+, et al./g, "").match(/[A-Za-z0-9αβγμ][A-Za-z0-9αβγμ\-\/]*[A-Za-z0-9αβγμ]+/g);
 
      allEngWords = allEngWords.filter(function (element, index, self) {
           return self.indexOf(element) === index;
@@ -500,6 +500,17 @@ function filtWords(registedAbbreContents, inputContents) {
                     allEngWords[k].match(/[A-Z]/g) == null ||
                     allEngWords[k].match("CODECODE") ||
                     (allEngWords[k].match(/[X0\-]/g) != null && allEngWords[k].match(/[X0\-]/g).length == allEngWords[k].length)
+               ) {
+                    allEngWords.splice(k, 1);
+                    k--;
+                    continue;
+               }
+
+               if (
+                    allEngWords[k].match(/PP-[A-Z]+-TWN-[0-9]+-20[0-9]+/g) ||
+                    allEngWords[k].match(/Biogen-[0-9]+-TWN-[0-9\/]/g) ||
+                    allEngWords[k].match(/[A-Z]+-20[0-9]+-[0-9]-20[0-9]+/g) ||
+                    allEngWords[k].match(/[A-Z]+-TW-[0-9]+-[.0-9]-[0-9\/]+/g)
                ) {
                     allEngWords.splice(k, 1);
                     k--;
@@ -566,27 +577,29 @@ function filtWords(registedAbbreContents, inputContents) {
           //      a.toUpperCase() - b.toUpperCase();
           // });
      }
-     let registedAbbreContents_modifier = registedAbbreContents.split(/[\n\r]/);
-     for (let i = 0; i < registedAbbreContents_modifier.length; i++) {
-          let tmpIndex = registedAbbreContents_modifier[i].match(/[0-9]+\.[\s ]*[A-Z]/);
-          // console.log(tmpIndex);
-          if (tmpIndex != undefined) {
-               registedAbbreContents_modifier.splice(i, 1);
-               i--;
-               continue;
-          }
-          if (registedAbbreContents_modifier[i].match(/[*†‡§]/) != undefined) {
-               registedAbbreContents_modifier.splice(i, 1);
-               i--;
-               continue;
-          }
-     }
-     registedAbbreContents_modifier = registedAbbreContents_modifier.join("; ").split(/[\s ]*;[\s ]*/);
-     registedAbbreContents_modifier = registedAbbreContents_modifier.filter(function (element, index, self) {
-          return self.indexOf(element) === index;
-     });
+     // let registedAbbreContents_modifierAry = registedAbbreContents.split(/[\n\r]/);
+     // for (let i = 0; i < registedAbbreContents_modifierAry.length; i++) {
+     //      let tmpIndex = registedAbbreContents_modifierAry[i].match(/[0-9]+\.[\s ]*[A-Z]/);
+     //      // console.log(tmpIndex);
+     //      if (tmpIndex != undefined) {
+     //           registedAbbreContents_modifierAry.splice(i, 1);
+     //           i--;
+     //           continue;
+     //      }
+     //      if (registedAbbreContents_modifierAry[i].match(/[*†‡§]/) != undefined) {
+     //           registedAbbreContents_modifierAry.splice(i, 1);
+     //           i--;
+     //           continue;
+     //      }
+     // }
 
-     outputAbbreOutcome(registedAbbreContents_modifier, allEngWords, suspectedWords);
+     // registedAbbreContents_modifierAry = registedAbbreContents_modifierAry.join("; ").split(/[\s ]*;[\s ]*/);
+     // registedAbbreContents_modifierAry = registedAbbreContents_modifierAry.filter(function (element, index, self) {
+     // 	return self.indexOf(element) === index;
+     // });
+     let registedAbbreContents_modifiedAry = filtAbbreRefToAbbreAry(registedAbbreContents);
+
+     outputAbbreOutcome(registedAbbreContents_modifiedAry, allEngWords, suspectedWords);
 }
 
 async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList) {
@@ -826,6 +839,54 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
      // await console.log("filtered\n" + allEngWords);
      // console.log("removed\n" + suspectedWords);
      document.getElementById("outcome").innerText = saveString;
+}
+
+function filtAbbreRefToAbbreAry(abbreRefContents) {
+     let outComeAry = [];
+     var tmpAbbreRefContentsAry = abbreRefContents.replace(/Abbreviation[s\s\n\r\:\u0003]*/i, "").split(/[\n\r\u0003]/);
+
+     for (var k = 0; k < tmpAbbreRefContentsAry.length; k++) {
+          if (tmpAbbreRefContentsAry[k].match(/reference/i)) {
+               continue;
+          } else if (tmpAbbreRefContentsAry[k].match("et al")) {
+               continue;
+          } else if (tmpAbbreRefContentsAry[k].match(/[0-9]+\.[\s ]*[A-Z]/)) {
+               continue;
+          } else if (tmpAbbreRefContentsAry[k].match(/[*†‡§]/)) {
+               continue;
+          } else if (tmpAbbreRefContentsAry[k].match(/[0-9]+\.[\s ]*[A-Z]/)) {
+               continue;
+          } else if (tmpAbbreRefContentsAry[k].match(/20[0-9]+;[\s ]*[0-9]+[:;(]/i)) {
+               continue;
+          } else if (tmpAbbreRefContentsAry[k].match(/http[s]*:\/\//)) {
+               continue;
+          } else {
+               outComeAry.push(tmpAbbreRefContentsAry[k]);
+          }
+     }
+
+     // let registedAbbreContents_modifierAry = registedAbbreContents.split(/[\n\r]/);
+     // for (let i = 0; i < registedAbbreContents_modifierAry.length; i++) {
+     //      let tmpIndex = registedAbbreContents_modifierAry[i].match(/[0-9]+\.[\s ]*[A-Z]/);
+     //      // console.log(tmpIndex);
+     //      if (tmpIndex != undefined) {
+     //           registedAbbreContents_modifierAry.splice(i, 1);
+     //           i--;
+     //           continue;
+     //      }
+     //      if (registedAbbreContents_modifierAry[i].match(/[*†‡§]/) != undefined) {
+     //           registedAbbreContents_modifierAry.splice(i, 1);
+     //           i--;
+     //           continue;
+     //      }
+     // }
+
+     outComeAry = outComeAry.join("; ").split(/[\s ]*;[\s ]*/);
+     outComeAry = outComeAry.filter(function (element, index, self) {
+          return self.indexOf(element) === index;
+     });
+
+     return outComeAry;
 }
 
 async function sayHello() {
