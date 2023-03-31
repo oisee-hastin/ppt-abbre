@@ -523,7 +523,7 @@ function filtWords(registedAbbreContents, inputContents) {
                     continue;
                }
 
-               if (allEngWords[k] == "Ph" || allEngWords[k] == "Hb" || allEngWords[k] == "Af") {
+               if (allEngWords[k] == "Ph" || allEngWords[k] == "Hb" || allEngWords[k] == "Af" || allEngWords[k] == "Pso") {
                     continue;
                }
 
@@ -611,6 +611,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
      // let suspectList = suspectedWords;
      let excistedAbbreList_ObjedAry = [];
      let mainAbbreList_filtered = mainAbbreList;
+     sortIgnoreUpperCase(mainAbbreList_filtered);
      // console.log(excistedAbbreList);
      // console.log(excistedAbbreList_ObjedAry);
      for (let i = 0; i < excistedAbbreList.length; i++) {
@@ -637,7 +638,6 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
           // console.log(excistedAbbreList_ObjedAry);
           // console.log(excistedAbbreList_ObjedAry.length);
      }
-
      let mainAbbreList_matched = [];
      let databaseRefedList = [];
      let unmatchedList = [];
@@ -997,3 +997,62 @@ function splitCsvRow(textdata) {
 $(function () {
      $('[data-bs-toggle="tooltip"]').tooltip();
 });
+// 使用 OAuth2 认证凭据进行身份验证
+// gapi.auth.authorize(
+//      {
+//           client_id: "551893986631-dcacldsruot36m0c09de31oidvtbu8sq.apps.googleusercontent.com",
+//           scope: "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",
+//           immediate: true,
+//      },
+//      handleAuthResult
+// );
+
+// 调用 Google Sheets API 读取数据
+// function getData() {
+//      gapi.client.sheets.spreadsheets.values
+//           .get({
+//                spreadsheetId: "11TKRpS153No3YQGL-JM0118ZtzFBYtm8Zk7kylTgc7s",
+//                range: "[RANGE]",
+//           })
+//           .then(
+//                function (response) {
+//                     var range = response.result;
+//                     if (range.values.length > 0) {
+//                          // 遍历数据并将其输出到网页上
+//                          for (var i = 0; i < range.values.length; i++) {
+//                               var row = range.values[i];
+//                               document.write(row.join(", ") + "<br>");
+//                          }
+//                     } else {
+//                          document.write("No data found.");
+//                     }
+//                },
+//                function (response) {
+//                     document.write("Error: " + response.result.error.message);
+//                }
+//           );
+// }
+// function databaseTest() {
+//      $.ajax({
+//           type: "post",
+//           url: "https://script.google.com/macros/s/AKfycbyiMJ1rB7zDzBsYCptNIemVzR6PCjcgif9hgRC_TDnBnpFiIt4g8SIvtFgjCmq3uVs-/exec",
+//           crossDomain: true,
+//           dataType: "jsonp",
+//           // data: {
+//           //      order_time: "AA",
+//           //      order_no: "AA",
+//           //      order_pay: "AA",
+//           //      order_name: "AA",
+//           //      order_phone: "AA",
+//           //      order_email: "AA",
+//           //      order_address: "AA",
+//           //      order_invoice: "AA",
+//           //      order_ps: "AA",
+//           // },
+//           success: function (response) {
+//                if (response == "成功") {
+//                     alert("成功::::" + no);
+//                }
+//           },
+//      });
+// }
