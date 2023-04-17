@@ -818,6 +818,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
      let mergedDatabaseRefedList = databaseRefedList.join("; ").toString();
      let mergedSuspectList = suspectList_filtered.join("; ").toString();
      let newAbbreToUpdateList = newAbbreToUpdateAry.join("; ").toString();
+     console.log(newAbbreToUpdateAry);
 
      let saveString = mergedMatchedList + "\r\r縮寫表清單:\r" + mergedMatchedList.replace(/; /g, "\r") + "\r\r";
      if (mergedUnmatchedList != "") {
@@ -832,9 +833,59 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
      if (mergedSuspectList != "") {
           saveString += "\r\r\r\r疑似縮寫字:\r" + mergedSuspectList;
      }
-     // if (newAbbreToUpdateList != "") {
-     //      saveString += "\r\r\r\r資料庫新增:\r" + newAbbreToUpdateList;
-     // }
+     newAbbreToUpdateAry = [];
+     excistedAbbreList_ObjedAry.forEach((obj) => {
+          let databaseMatchObj = abbreDatabaseAry.filter((databaseObj) => {
+               obj.full == databaseObj.full;
+          });
+          if (databaseMatchObj.abbre == obj.abbre) {
+          } else {
+               newAbbreToUpdateAry.push(obj);
+          }
+     });
+     console.log("N " + newAbbreToUpdateAry);
+     // let databaseMatchObjAry = abbreDatabaseAry.filter((obj) => {
+     // 	return obj.abbre == mainAbbreList_filtered[i];
+     // });
+     if (newAbbreToUpdateAry.length != 0) {
+          // $.ajax({
+          //      url: "https://script.google.com/macros/s/AKfycbyWZQA5Vbtn1QUJx4iQNWGoLDdRX_P8v8KA8H1Q943O5wl7mgkvmQ3qtykZzurxi8AT/exec",
+          //      type: "post",
+          //      data: JSON.stringify(newAbbreToUpdateAry),
+          // });
+
+          // let xhr = new XMLHttpRequest();
+          // let url = "https://script.google.com/macros/s/AKfycbyWZQA5Vbtn1QUJx4iQNWGoLDdRX_P8v8KA8H1Q943O5wl7mgkvmQ3qtykZzurxi8AT/exec";
+
+          // xhr.open("POST", url);
+          // xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+          // xhr.onreadystatechange = function () {
+          //      if (xhr.readyState === 4 && xhr.status === 200) {
+          //           const response = JSON.parse(xhr.responseText);
+          //           console.log(response.status);
+          //      }
+          // };
+
+          // const formData = new FormData();
+          // formData.append("data", JSON.stringify(newAbbreToUpdateAry));
+
+          // xhr.send(formData);
+          // console.log("update");
+          // function getData(callback) {
+          const url = "https://script.google.com/macros/s/AKfycbyr9FTSclwC55mI8RZblZpV0tfta7o3rXTLbq3dh_Us95rcXUroAgN64iHRMSYwaosL/exec?text=" + JSON.stringify(newAbbreToUpdateAry);
+          const script = document.createElement("script");
+          script.src = url;
+          document.body.appendChild(script);
+          abbreDatabaseAry = abbreDatabaseAry.concat(newAbbreToUpdateAry);
+          document.getElementById("notificationContents").innerText = "已新增 " + newAbbreToUpdateAry.length + " 筆縮寫至資料庫";
+          $(".toast").toast({ delay: 4000 });
+          $(".toast").toast("show");
+          //    }
+     }
+
+     // https://script.google.com/a/macros/oisee.cool/s/AKfycby2vFs_q_o5EaKJe3XFW1F4z25LaaKOZb6tSdD7licbqUE7kdbmtzcvaB41WtrZx0gR/exec
+     // saveString += "\r\r\r\r資料庫新增:\r" + newAbbreToUpdateList;
 
      // abbreTextFile.write(saveString);
      // await console.log("filtered\n" + allEngWords);
@@ -926,6 +977,7 @@ async function sayHello() {
           //      });
           //      await context.sync();
           // });
+
           await Office.context.document.getSelectedDataAsync(
                "text", // coercionType
                {
@@ -1020,6 +1072,10 @@ function init() {
                console.log(abbreDatabaseAry);
 
                databaseStatus.innerHTML = databaseLoadedContent;
-               databaseStatus.disabled = false;
+               // databaseStatus.disabled = false;
+
+               document.getElementById("notificationContents").innerText = "已載入 " + abbreDatabaseAry.length + " 筆縮寫";
+               $(".toast").toast({ delay: 4000 });
+               $(".toast").toast("show");
           });
 }
