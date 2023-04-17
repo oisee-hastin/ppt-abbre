@@ -57,7 +57,6 @@ async function searchRegistObj() {
           });
      }
 }
-
 async function registAbbreObj() {
      await searchRegistObj();
      let alt = 0;
