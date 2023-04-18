@@ -873,7 +873,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
           // xhr.send(formData);
           // console.log("update");
           // function getData(callback) {
-          const url = "https://script.google.com/macros/s/AKfycbyr9FTSclwC55mI8RZblZpV0tfta7o3rXTLbq3dh_Us95rcXUroAgN64iHRMSYwaosL/exec?text=" + JSON.stringify(newAbbreToUpdateAry);
+          const url = "https://script.google.com/macros/s/AKfycbzy7Cb1wGvFfpTS_1tJ_eh1USkdbu2RTnP__uBLrDoskBkoczWOTlEfk7bqkXi1RIkI/exec?text=" + JSON.stringify(newAbbreToUpdateAry);
           const script = document.createElement("script");
           script.src = url;
           document.body.appendChild(script);
