@@ -912,6 +912,8 @@ function filtAbbreRefToAbbreAry(abbreRefContents) {
                continue;
           } else if (tmpAbbreRefContentsAry[k].match(/http[s]*:\/\//)) {
                continue;
+          } else if (tmpAbbreRefContentsAry[k].match(/\)[ \s]*:/)) {
+               continue;
           } else {
                outComeAry.push(tmpAbbreRefContentsAry[k]);
           }
