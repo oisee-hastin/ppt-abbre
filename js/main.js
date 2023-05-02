@@ -660,7 +660,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                }
                if (matchedChecker) {
                     // console.log(excistedAbbreList_ObjedAry[i].abbre + " added");
-                    mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + "=" + excistedAbbreList_ObjedAry[i].full);
+                    mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
                     let tmpIndex = mainAbbreList_filtered.indexOf(excistedAbbreList_ObjedAry[i].abbre);
                     if (tmpIndex != -1) {
                          mainAbbreList_filtered.splice(tmpIndex, 1);
@@ -736,12 +736,12 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                     // newAbbreToUpdateAry_Obj.push("'" + exsistedMatchObj.abbre + "', '" + exsistedMatchObj.full + "'");
 
                     //待補充資料庫中有多筆不同資料時的處理
-                    newAbbreToUpdateAry.push(mainAbbreList_filtered[i] + "=" + full);
+                    newAbbreToUpdateAry.push(mainAbbreList_filtered[i] + " = " + full);
                }
           } else if (databaseMatchObjAry != 0) {
                full = databaseMatchObjAry[0].full;
-               unmatchedList.push(mainAbbreList_filtered[i] + "=" + full);
-               databaseRefedList.push(mainAbbreList_filtered[i] + "=" + full);
+               unmatchedList.push(mainAbbreList_filtered[i] + " = " + full);
+               databaseRefedList.push(mainAbbreList_filtered[i] + " = " + full);
                // } else if (mainAbbreList_filtered[i].match(/[A-Z]+\/[A-Z]+/)) {
                //      let tmpAry = mainAbbreList_filtered[i].split("/");
                //      for (let k = 0; k < tmpAry.length; k++) {
@@ -753,11 +753,11 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                //      i--;
                //      continue;
           } else {
-               unmatchedList.push(mainAbbreList_filtered[i] + "=");
+               unmatchedList.push(mainAbbreList_filtered[i] + " = ");
                full = "_______________";
           }
 
-          mainAbbreList_matched.push(mainAbbreList_filtered[i] + "=" + full);
+          mainAbbreList_matched.push(mainAbbreList_filtered[i] + " = " + full);
      }
 
      let suspectList_filtered = [];
@@ -783,20 +783,20 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                     }
                }
                if (rematchFail) {
-                    unusedRefedList.push(excistedAbbreList_ObjedAry[i].abbre + "=" + excistedAbbreList_ObjedAry[i].full);
+                    unusedRefedList.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
                     continue;
                } else {
-                    mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + "=" + excistedAbbreList_ObjedAry[i].full);
+                    mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
                     tmpRematchAry.sort();
                     for (let k = 0; k < tmpRematchAry[i]; k++) {
                          suspectList_filtered.splice(tmpRematchAry.pop(), 1);
                     }
                }
           } else if (suspectList_filtered.indexOf(excistedAbbreList_ObjedAry[i].abbre) != -1) {
-               mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + "=" + excistedAbbreList_ObjedAry[i].full);
+               mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
                suspectList_filtered.splice(suspectList_filtered.indexOf(excistedAbbreList_ObjedAry[i].abbre), 1);
           } else {
-               unusedRefedList.push(excistedAbbreList_ObjedAry[i].abbre + "=" + excistedAbbreList_ObjedAry[i].full);
+               unusedRefedList.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
           }
      }
 
