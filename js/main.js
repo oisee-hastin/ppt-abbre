@@ -802,7 +802,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
      newAbbreToUpdateAry = [];
      excistedAbbreList_ObjedAry.forEach((obj) => {
           let databaseMatchObj = abbreDatabaseAry.filter((databaseObj) => {
-               return obj.full == databaseObj.full && obj.abbre == databaseObj.abbre;
+               return obj.full.toLowerCase == databaseObj.full.toLowerCase && obj.abbre.toLowerCase == databaseObj.abbre.toLowerCase;
           });
           if (databaseMatchObj) {
           } else if (obj.abbre.match(/[\u4e00-\u9fa5]/) || obj.full.match(/[\u4e00-\u9fa5]/)) {
