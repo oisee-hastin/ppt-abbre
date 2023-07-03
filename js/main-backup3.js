@@ -122,6 +122,7 @@ async function registAbbreObj() {
                               }
                          } catch (err) {}
                     }
+                    // console.log(allPageContents);
                }
                if (registedCount > 0) {
                     document.getElementById("notificationContents").innerText = "已新增 " + registedCount + " 筆縮寫物件紀錄";
@@ -135,6 +136,7 @@ async function registAbbreObj() {
                slides.load("items");
                await context.sync();
                let curSlideID = slides.items[0].id;
+               // console.log(slides.items[0].id);
                let shapes = context.presentation.getSelectedShapes();
                let shapeCount = shapes.getCount();
                shapes.load("items");
@@ -158,7 +160,15 @@ async function registAbbreObj() {
                          document.getElementById("notificationContents").innerText = "紀錄中已有此物件";
                     }
                     console.log(ary_registedAbbreObjIDs);
+                    // console.log(shape.id);
+                    // console.log(shape);
+                    // document.getElementById("outcome").innerText = shape.id;
                });
+               // abbreLogTag = slide0.tags.getItemOrNullObject("ABBRELOG");
+               // abbreLogTag.load("key, value");
+               // await context.sync();
+               // console.log(JSON.stringify(abbreLogTag.value));
+               // await context.sync();
           });
      }
      await PowerPoint.run(async (context) => {
@@ -277,7 +287,10 @@ async function registTableObj() {
                          filterType: "all",
                     }, // filterType
                     function (result) {
+                         // callback
+                         // console.log(result.value);
                          tmpObj.contents = result.value;
+                         //   write('Selected data is: ' + dataValue);
                     }
                );
 
@@ -301,6 +314,11 @@ async function registTableObj() {
                          document.getElementById("notificationContents").innerText = "已記錄新表格物件";
                     }
                }
+
+               // console.log(ary_registedTableObjIDandContents.length);
+               // console.log(shape.id);
+               // console.log(shape);
+               // document.getElementById("outcome").innerText = shape.id;
                await context.sync();
           });
      }
@@ -319,11 +337,13 @@ async function listAbbreofActivePage() {
      await PowerPoint.run(async (context) => {
           let tmpCount = context.presentation.getSelectedShapes().getCount();
           await context.sync();
+          // console.log(tmpCount.value);
           if (tmpCount.value > 0) {
                registAbbreObj();
           }
      });
      let registedAbbreContents = "";
+     // readAbbreCsvFile();
      await PowerPoint.run(async (context) => {
           let curPageContents = "";
           let IDofUndetectedItems = [];
@@ -333,6 +353,7 @@ async function listAbbreofActivePage() {
           let curSlideID = slides.items[0].id;
           context.presentation.load("slides");
           await context.sync();
+          // console.log(curSlideID);
           let activeSlide = context.presentation.slides.getItem(curSlideID);
           activeSlide.load("shapes");
           await context.sync();
@@ -340,6 +361,7 @@ async function listAbbreofActivePage() {
           shapes.load("items");
           await context.sync();
           for (let i = 0; i < shapes.items.length; i++) {
+               // shapes.items.map((shape) => {
                let tmpObj = new Object();
                tmpObj.slideID = curSlideID;
                tmpObj.shapeID = shapes.items[i].id;
@@ -352,6 +374,8 @@ async function listAbbreofActivePage() {
                let checkTableRegisted = ary_registedTableObjIDandContents.find((obj) => {
                     return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
                });
+               // console.log(checkTableRegisted);
+               // console.log(checkExcluded);
                try {
                     if (checkTableRegisted != undefined) {
                          curPageContents += checkTableRegisted.contents;
@@ -379,6 +403,7 @@ async function listAbbreofActivePage() {
                $(".toast").toast({ delay: 4000 });
                $(".toast").toast("show");
           }
+          // console.log(curPageContents);
           filtWords(registedAbbreContents, curPageContents);
      });
 }
@@ -388,11 +413,13 @@ async function sortAbbreofActivePage() {
      await PowerPoint.run(async (context) => {
           let tmpCount = context.presentation.getSelectedShapes().getCount();
           await context.sync();
+          // console.log(tmpCount.value);
           if (tmpCount.value > 0) {
                registAbbreObj();
           }
      });
      let registedAbbreContents = "";
+     // readAbbreCsvFile();
      await PowerPoint.run(async (context) => {
           let IDofUndetectedItems = [];
           let slides = context.presentation.getSelectedSlides();
@@ -401,6 +428,7 @@ async function sortAbbreofActivePage() {
           let curSlideID = slides.items[0].id;
           context.presentation.load("slides");
           await context.sync();
+          // console.log(curSlideID);
           let activeSlide = context.presentation.slides.getItem(curSlideID);
           activeSlide.load("shapes");
           await context.sync();
@@ -488,6 +516,7 @@ async function listAbbreofAllPages() {
                          IDofUndetectedItems.push(curPageShapes.items[k].id);
                     }
                }
+               // console.log(allPageContents);
           }
           if (IDofUndetectedItems.length > 0) {
                console.log("有無法偵測的物件");
@@ -516,9 +545,17 @@ function filtWords(registedAbbreContents, inputContents) {
      let suspectedWords = [];
 
      if (allEngWords != null) {
+          // sortIgnoreUpperCase(allEngWords);
           allEngWords.sort();
+          // let tmpWord = "";
           for (let k = 0; k < allEngWords.length; k++) {
+               // if (tmpWord == allEngWords[k]) {
+               //      console.log("dup " + allEngWords[k]);
+               //      allEngWords.splice(k, 1);
+               //      continue;
+               // }
                tmpWord = allEngWords[k].toString();
+               // await console.log("pre " + tmpWord);
                if (allEngWords[k].match(/\./)) {
                     continue;
                }
@@ -591,23 +628,57 @@ function filtWords(registedAbbreContents, inputContents) {
      }
 
      if (allEngWords != null) {
+          // await sortIgnoreUpperCase(allEngWords);
+          // allAbbs = allAbbs.concat(allEngWords).sort(function compare(a, b) {
+          //      a.toUpperCase() - b.toUpperCase();
+          // });
           sortIgnoreUpperCase(allEngWords);
      }
      if (suspectedWords != null) {
           sortIgnoreUpperCase(suspectedWords);
+          // allRemoved = allRemoved.concat(suspectedWords).sort(function compare(a, b) {
+          //      a.toUpperCase() - b.toUpperCase();
+          // });
      }
+     // let registedAbbreContents_modifierAry = registedAbbreContents.split(/[\n\r]/);
+     // for (let i = 0; i < registedAbbreContents_modifierAry.length; i++) {
+     //      let tmpIndex = registedAbbreContents_modifierAry[i].match(/[0-9]+\.[\s ]*[A-Z]/);
+     //      // console.log(tmpIndex);
+     //      if (tmpIndex != undefined) {
+     //           registedAbbreContents_modifierAry.splice(i, 1);
+     //           i--;
+     //           continue;
+     //      }
+     //      if (registedAbbreContents_modifierAry[i].match(/[*†‡§]/) != undefined) {
+     //           registedAbbreContents_modifierAry.splice(i, 1);
+     //           i--;
+     //           continue;
+     //      }
+     // }
 
+     // registedAbbreContents_modifierAry = registedAbbreContents_modifierAry.join("; ").split(/[\s ]*;[\s ]*/);
+     // registedAbbreContents_modifierAry = registedAbbreContents_modifierAry.filter(function (element, index, self) {
+     // 	return self.indexOf(element) === index;
+     // });
      let registedAbbreContents_modifiedAry = filtAbbreRefToAbbreAry(registedAbbreContents);
 
      outputAbbreOutcome(registedAbbreContents_modifiedAry, allEngWords, suspectedWords);
 }
 
 async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList) {
+     // excistedAbbreList = excistedAbbreList.join("; ").split(/[\s ]*;[\s ]*/);
+     // console.log(mainAbbreList);
+     // let excistedAbbreList = registedAbbreContents_modifier.join("; ").split(/[\s ]*;[\s ]*/);
+     // console.log(excistedAbbreList);
+     // let mainAbbreList = allEngWords;
+     // let suspectList = suspectedWords;
      let excistedAbbreList_ObjedAry = [];
      let mainAbbreList_filtered = mainAbbreList;
      sortIgnoreUpperCase(mainAbbreList_filtered);
-
+     // console.log(excistedAbbreList);
+     // console.log(excistedAbbreList_ObjedAry);
      for (let i = 0; i < excistedAbbreList.length; i++) {
+          // console.log(excistedAbbreList_ObjedAry);
           try {
                if (excistedAbbreList[i].toString().match(/[\:=,]/) != null && excistedAbbreList[i].toString().match(/[\:=,]/).length > 1) {
                     let tmpAry = excistedAbbreList[i].toString().split(/,[\s]*/);
@@ -621,22 +692,28 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                          tmpObj.full = excistedAbbreList[i].split(/[\s ]*[\:=,][\s ]*/)[1];
                          excistedAbbreList_ObjedAry.push(tmpObj);
                     }
+                    // console.log(tmpObj);
                }
           } catch (err) {
                continue;
           }
+          // console.log(excistedAbbreList);
+          // console.log(excistedAbbreList_ObjedAry);
+          // console.log(excistedAbbreList_ObjedAry.length);
      }
      let mainAbbreList_matched = [];
      let databaseRefedList = [];
      let unmatchedList = [];
      let newAbbreToUpdateAry = [];
+     // console.log(excistedAbbreList_ObjedAry);
      for (let i = 0; i < excistedAbbreList_ObjedAry.length; i++) {
           if (excistedAbbreList_ObjedAry[i].abbre.match(/[\/\-]/)) {
                let tmpAry = excistedAbbreList_ObjedAry[i].abbre.split(/[\/\-]/);
                let matchedChecker = false;
                for (let k = 0; k < tmpAry.length; k++) {
                     let tmpIndex = mainAbbreList_filtered.indexOf(tmpAry[k]);
-
+                    // console.log(mainAbbreList_filtered[tmpIndex]);
+                    // console.log("matchedIndex: " + tmpIndex);
                     if (tmpIndex != -1) {
                          matchedChecker = true;
                          mainAbbreList_filtered.splice(tmpIndex, 1);
@@ -644,6 +721,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                     }
                }
                if (matchedChecker) {
+                    // console.log(excistedAbbreList_ObjedAry[i].abbre + " added");
                     mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
                     let tmpIndex = mainAbbreList_filtered.indexOf(excistedAbbreList_ObjedAry[i].abbre);
                     if (tmpIndex != -1) {
@@ -654,6 +732,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                }
           }
      }
+     // await console.log("A");
      console.log(mainAbbreList_filtered);
      for (let i = 0; i < mainAbbreList_filtered.length; i++) {
           let exsistedMatchObj = excistedAbbreList_ObjedAry.find((obj) => {
@@ -695,6 +774,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                     continue;
                }
           }
+          // console.log(mainAbbreList_filtered);
           let databaseMatchObjAry = abbreDatabaseAry.filter((obj) => {
                return obj.abbre == mainAbbreList_filtered[i];
           });
@@ -712,6 +792,11 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                          return obj.full.toLowerCase().replace(/./g, "") == exsistedMatchObj.full.toLowerCase().replace(/./g, "");
                     }).length == 0
                ) {
+                    // if (databaseMatchObjAry != undefined) {
+                    //      alert(databaseMatchObjAry.full + "\r" + exsistedMatchObj.full);
+                    // }
+                    // newAbbreToUpdateAry_Obj.push("'" + exsistedMatchObj.abbre + "', '" + exsistedMatchObj.full + "'");
+
                     //待補充資料庫中有多筆不同資料時的處理
                     newAbbreToUpdateAry.push(mainAbbreList_filtered[i] + " = " + full);
                }
@@ -719,6 +804,16 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                full = databaseMatchObjAry[0].full;
                unmatchedList.push(mainAbbreList_filtered[i] + " = " + full);
                databaseRefedList.push(mainAbbreList_filtered[i] + " = " + full);
+               // } else if (mainAbbreList_filtered[i].match(/[A-Z]+\/[A-Z]+/)) {
+               //      let tmpAry = mainAbbreList_filtered[i].split("/");
+               //      for (let k = 0; k < tmpAry.length; k++) {
+               //           if (mainAbbreList_filtered.indexOf(tmpAry[k]) === -1) {
+               //                mainAbbreList_filtered.push(tmpAry[k]);
+               //           }
+               //      }
+               //      mainAbbreList_filtered.splice(i, 1);
+               //      i--;
+               //      continue;
           } else {
                unmatchedList.push(mainAbbreList_filtered[i] + " = ");
                full = "_______________";
@@ -741,6 +836,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                let tmpSplitAbbreAry = excistedAbbreList_ObjedAry[i].abbre.toString().split(/[ \/\-]/);
                let rematchFail = false;
                for (let k = 0; k < tmpSplitAbbreAry.length; k++) {
+                    // alert(mainAbbreList_filtered.indexOf(tmpSplitAbbreAry[k]));
                     if (mainAbbreList_filtered.indexOf(tmpSplitAbbreAry[k]) == -1) {
                          rematchFail = true;
                          continue;
@@ -802,17 +898,43 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
      newAbbreToUpdateAry = [];
      excistedAbbreList_ObjedAry.forEach((obj) => {
           let databaseMatchObj = abbreDatabaseAry.filter((databaseObj) => {
-               return obj.full == databaseObj.full && obj.abbre == databaseObj.abbre;
+               obj.full == databaseObj.full;
           });
-          if (databaseMatchObj) {
-          } else if (obj.abbre.match(/[\u4e00-\u9fa5]/) || obj.full.match(/[\u4e00-\u9fa5]/)) {
+          if (databaseMatchObj.abbre == obj.abbre) {
           } else {
                newAbbreToUpdateAry.push(obj);
           }
      });
      console.log("N " + newAbbreToUpdateAry);
-
+     // let databaseMatchObjAry = abbreDatabaseAry.filter((obj) => {
+     // 	return obj.abbre == mainAbbreList_filtered[i];
+     // });
      if (newAbbreToUpdateAry.length != 0) {
+          // $.ajax({
+          //      url: "https://script.google.com/macros/s/AKfycbyWZQA5Vbtn1QUJx4iQNWGoLDdRX_P8v8KA8H1Q943O5wl7mgkvmQ3qtykZzurxi8AT/exec",
+          //      type: "post",
+          //      data: JSON.stringify(newAbbreToUpdateAry),
+          // });
+
+          // let xhr = new XMLHttpRequest();
+          // let url = "https://script.google.com/macros/s/AKfycbyWZQA5Vbtn1QUJx4iQNWGoLDdRX_P8v8KA8H1Q943O5wl7mgkvmQ3qtykZzurxi8AT/exec";
+
+          // xhr.open("POST", url);
+          // xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+          // xhr.onreadystatechange = function () {
+          //      if (xhr.readyState === 4 && xhr.status === 200) {
+          //           const response = JSON.parse(xhr.responseText);
+          //           console.log(response.status);
+          //      }
+          // };
+
+          // const formData = new FormData();
+          // formData.append("data", JSON.stringify(newAbbreToUpdateAry));
+
+          // xhr.send(formData);
+          // console.log("update");
+          // function getData(callback) {
           const url = "https://script.google.com/macros/s/AKfycbzy7Cb1wGvFfpTS_1tJ_eh1USkdbu2RTnP__uBLrDoskBkoczWOTlEfk7bqkXi1RIkI/exec?text=" + JSON.stringify(newAbbreToUpdateAry);
           const script = document.createElement("script");
           script.src = url;
@@ -821,8 +943,15 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
           document.getElementById("notificationContents").innerText = "已新增 " + newAbbreToUpdateAry.length + " 筆縮寫至資料庫";
           $(".toast").toast({ delay: 4000 });
           $(".toast").toast("show");
+          //    }
      }
 
+     // https://script.google.com/a/macros/oisee.cool/s/AKfycby2vFs_q_o5EaKJe3XFW1F4z25LaaKOZb6tSdD7licbqUE7kdbmtzcvaB41WtrZx0gR/exec
+     // saveString += "\r\r\r\r資料庫新增:\r" + newAbbreToUpdateList;
+
+     // abbreTextFile.write(saveString);
+     // await console.log("filtered\n" + allEngWords);
+     // console.log("removed\n" + suspectedWords);
      document.getElementById("outcome").innerText = saveString;
 }
 
@@ -855,6 +984,22 @@ function filtAbbreRefToAbbreAry(abbreRefContents) {
           }
      }
 
+     // let registedAbbreContents_modifierAry = registedAbbreContents.split(/[\n\r]/);
+     // for (let i = 0; i < registedAbbreContents_modifierAry.length; i++) {
+     //      let tmpIndex = registedAbbreContents_modifierAry[i].match(/[0-9]+\.[\s ]*[A-Z]/);
+     //      // console.log(tmpIndex);
+     //      if (tmpIndex != undefined) {
+     //           registedAbbreContents_modifierAry.splice(i, 1);
+     //           i--;
+     //           continue;
+     //      }
+     //      if (registedAbbreContents_modifierAry[i].match(/[*†‡§]/) != undefined) {
+     //           registedAbbreContents_modifierAry.splice(i, 1);
+     //           i--;
+     //           continue;
+     //      }
+     // }
+
      outComeAry = outComeAry.join("; ").split(/[\s ]*;[\s ]*/);
      outComeAry = outComeAry.filter(function (element, index, self) {
           return self.indexOf(element) === index;
@@ -870,6 +1015,35 @@ async function sayHello() {
 
           // clear current selection
           let outcome = "";
+          // await Office.context.document.getResourceByIndexAsync(
+          //      1,
+
+          //      function (result) {
+          //           // callback
+          //           outcome = result.value;
+          //           console.log(outcome);
+          //           document.getElementById("outcome").innerText = outcome;
+          //           //   write('Selected data is: ' + dataValue);
+          //      }
+          // );
+          // await PowerPoint.run(async (context) => {
+          //      let slides = context.presentation.getSelectedSlides();
+          //      slides.load("items");
+          //      await context.sync();
+          //      slides.items.map((slide) => {
+          //           console.log(slide.id);
+          //      });
+          //      let shapes = context.presentation.getSelectedShapes();
+
+          //      let shapeCount = shapes.getCount();
+          //      shapes.load("items");
+          //      await context.sync();
+          //      shapes.items.map((shape) => {
+          //           shape.fill.setSolidColor("red");
+          //           document.getElementById("outcome").innerText = shape.id;
+          //      });
+          //      await context.sync();
+          // });
 
           await Office.context.document.getSelectedDataAsync(
                "text", // coercionType
@@ -899,6 +1073,29 @@ async function sortIgnoreUpperCase(ary) {
      });
      // await console.log(ary);
 }
+// function readAbbreCsvFile() {
+//      try {
+//           let xhr = new XMLHttpRequest();
+//           xhr.open("GET", "https://oisee-hastin.github.io/ppt-abbre/js/database/abbreListDatabase.csv", false);
+//           xhr.onload = function () {
+//                let inputTxt = xhr.responseText;
+
+//                let basicAry = inputTxt.replace(/[\r\n]+/g, "\n").split("\n");
+//                abbreDatabaseAry = [];
+//                // alert(basicAry);
+//                basicAry.forEach(function (row, i) {
+//                     let tmpObject = new Object();
+//                     tmpObject.abbre = splitCsvRow(row)[0].toString();
+//                     tmpObject.full = splitCsvRow(row)[1].toString();
+//                     abbreDatabaseAry.push(tmpObject);
+//                });
+//           };
+//           // reader.readAsText(file);
+//           xhr.send();
+//      } catch (err) {
+//           alert(err.line + "\n" + err);
+//      }
+// }
 
 function splitCsvRow(textdata) {
      let csvColAry = [];
