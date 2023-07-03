@@ -394,42 +394,63 @@ async function sortAbbreofActivePage() {
      });
      let registedAbbreContents = "";
      await PowerPoint.run(async (context) => {
-          let IDofUndetectedItems = [];
           let slides = context.presentation.getSelectedSlides();
           slides.load("items");
           await context.sync();
           let curSlideID = slides.items[0].id;
-          context.presentation.load("slides");
+          let shapes = context.presentation.getSelectedShapes();
+          let shapeCount = shapes.getCount();
           await context.sync();
-          let activeSlide = context.presentation.slides.getItem(curSlideID);
-          activeSlide.load("shapes");
-          await context.sync();
-          let shapes = activeSlide.shapes;
-          shapes.load("items");
-          await context.sync();
-          console.log(ary_registedAbbreObjIDs);
-          for (let i = 0; i < shapes.items.length; i++) {
-               let tmpObj = new Object();
-               tmpObj.slideID = curSlideID;
-               tmpObj.shapeID = shapes.items[i].id;
-               let checkAbbreRegisted = ary_registedAbbreObjIDs.findIndex((obj) => {
-                    return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
-               });
-               let checkExcluded = ary_excludedAbbreObjIDs.findIndex((obj) => {
-                    return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
-               });
-               try {
-                    if (checkExcluded != -1) {
-                         continue;
-                    } else {
-                         shapes.items[i].textFrame.textRange.load("text");
-                         await context.sync();
-                         if (checkAbbreRegisted != -1) {
-                              registedAbbreContents = shapes.items[i].textFrame.textRange.text;
+          if (shapeCount.value != 0) {
+               shapes.load("items");
+               await context.sync();
+               for (let i = 0; i < shapes.items.length; i++) {
+                    // shapes.items.map((shape) => {
+                    let tmpObj = new Object();
+                    tmpObj.slideID = curSlideID;
+                    tmpObj.shapeID = shapes.items[i].id;
+                    shapes.items[i].textFrame.textRange.load("text");
+                    await context.sync();
+                    registedAbbreContents += shapes.items[i].textFrame.textRange.text;
+                    // });
+               }
+          } else {
+               console.log("A");
+               let IDofUndetectedItems = [];
+               await context.sync();
+               let curSlideID = slides.items[0].id;
+               context.presentation.load("slides");
+               await context.sync();
+               let activeSlide = context.presentation.slides.getItem(curSlideID);
+               activeSlide.load("shapes");
+               await context.sync();
+               let shapes = activeSlide.shapes;
+               shapes.load("items");
+               await context.sync();
+               console.log(ary_registedAbbreObjIDs);
+               for (let i = 0; i < shapes.items.length; i++) {
+                    let tmpObj = new Object();
+                    tmpObj.slideID = curSlideID;
+                    tmpObj.shapeID = shapes.items[i].id;
+                    let checkAbbreRegisted = ary_registedAbbreObjIDs.findIndex((obj) => {
+                         return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
+                    });
+                    let checkExcluded = ary_excludedAbbreObjIDs.findIndex((obj) => {
+                         return obj.slideID == tmpObj.slideID && obj.shapeID == tmpObj.shapeID;
+                    });
+                    try {
+                         if (checkExcluded != -1) {
+                              continue;
+                         } else {
+                              shapes.items[i].textFrame.textRange.load("text");
+                              await context.sync();
+                              if (checkAbbreRegisted != -1) {
+                                   registedAbbreContents = shapes.items[i].textFrame.textRange.text;
+                              }
                          }
+                    } catch (err) {
+                         IDofUndetectedItems.push(shapes.items[i].id);
                     }
-               } catch (err) {
-                    IDofUndetectedItems.push(shapes.items[i].id);
                }
           }
 
@@ -437,9 +458,17 @@ async function sortAbbreofActivePage() {
           registedAbbreContents_modifiedAry.sort((a, b) => {
                return a.toLowerCase().localeCompare(b.toLowerCase());
           });
-          console.log(registedAbbreContents_modifiedAry);
           document.getElementById("outcome").innerText = registedAbbreContents_modifiedAry.join("; ") + "\r\r" + registedAbbreContents_modifiedAry.join("\r");
      });
+     // await PowerPoint.run(async (context) => {
+
+     //      let registedAbbreContents_modifiedAry = filtAbbreRefToAbbreAry(registedAbbreContents);
+     //      registedAbbreContents_modifiedAry.sort((a, b) => {
+     //           return a.toLowerCase().localeCompare(b.toLowerCase());
+     //      });
+     //      console.log(registedAbbreContents_modifiedAry);
+     //      document.getElementById("outcome").innerText = registedAbbreContents_modifiedAry.join("; ") + "\r\r" + registedAbbreContents_modifiedAry.join("\r");
+     // });
 }
 async function listAbbreofAllPages() {
      searchRegistObj();
