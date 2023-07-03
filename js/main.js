@@ -808,6 +808,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
           } else if (obj.abbre.match(/[\u4e00-\u9fa5]/) || obj.full.match(/[\u4e00-\u9fa5]/)) {
           } else {
                newAbbreToUpdateAry.push(obj);
+               databaseObj.push(obj);
           }
      });
      console.log("N " + newAbbreToUpdateAry);
