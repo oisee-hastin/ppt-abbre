@@ -384,6 +384,9 @@ async function listAbbreofActivePage() {
 }
 
 async function sortAbbreofActivePage() {
+     let format_1 = document.getElementById("abbre_format_1").value;
+     let format_2 = document.getElementById("abbre_format_2").value;
+     console.log(format_1);
      searchRegistObj();
      await PowerPoint.run(async (context) => {
           let tmpCount = context.presentation.getSelectedShapes().getCount();
@@ -411,7 +414,7 @@ async function sortAbbreofActivePage() {
                     tmpObj.shapeID = shapes.items[i].id;
                     shapes.items[i].textFrame.textRange.load("text");
                     await context.sync();
-                    registedAbbreContents += shapes.items[i].textFrame.textRange.text;
+                    registedAbbreContents += shapes.items[i].textFrame.textRange.text.replace(/[\s ]*[\:=][\s ]*/g, format_1);
                     // });
                }
           } else {
@@ -445,7 +448,7 @@ async function sortAbbreofActivePage() {
                               shapes.items[i].textFrame.textRange.load("text");
                               await context.sync();
                               if (checkAbbreRegisted != -1) {
-                                   registedAbbreContents = shapes.items[i].textFrame.textRange.text;
+                                   registedAbbreContents = shapes.items[i].textFrame.textRange.text.replace(/[\s ]*[\:=][\s ]*/g, format_1);
                               }
                          }
                     } catch (err) {
@@ -458,7 +461,7 @@ async function sortAbbreofActivePage() {
           registedAbbreContents_modifiedAry.sort((a, b) => {
                return a.toLowerCase().localeCompare(b.toLowerCase());
           });
-          document.getElementById("outcome").innerText = registedAbbreContents_modifiedAry.join("; ") + "\r\r" + registedAbbreContents_modifiedAry.join("\r");
+          document.getElementById("outcome").innerText = registedAbbreContents_modifiedAry.join(format_2) + "\r\r" + registedAbbreContents_modifiedAry.join("\r");
      });
      // await PowerPoint.run(async (context) => {
 
@@ -634,6 +637,9 @@ function filtWords(registedAbbreContents, inputContents) {
 async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList) {
      let excistedAbbreList_ObjedAry = [];
      let mainAbbreList_filtered = mainAbbreList;
+     let format_1 = document.getElementById("abbre_format_1").value;
+     let format_2 = document.getElementById("abbre_format_2").value;
+     console.log(format_1);
      sortIgnoreUpperCase(mainAbbreList_filtered);
 
      for (let i = 0; i < excistedAbbreList.length; i++) {
@@ -673,7 +679,7 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                     }
                }
                if (matchedChecker) {
-                    mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
+                    mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + format_1 + excistedAbbreList_ObjedAry[i].full);
                     let tmpIndex = mainAbbreList_filtered.indexOf(excistedAbbreList_ObjedAry[i].abbre);
                     if (tmpIndex != -1) {
                          mainAbbreList_filtered.splice(tmpIndex, 1);
@@ -736,24 +742,37 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                     }),
                     1
                );
+               // console.log(full.toLowerCase().replace(/\./g, ""));
+               // console.log(
+               //      abbreDatabaseAry.filter((obj) => {
+               //           return obj.full.toLowerCase().replace(/\./g, "") == full.toLowerCase().replace(/\./g, "");
+               //      })
+               // );
+               // console.log(
+               //      abbreDatabaseAry.filter((obj) => {
+               //           return obj.full.toLowerCase().replace(/\./g, "") == full.toLowerCase().replace(/\./g, "");
+               //      }).length == 0
+               // );
                if (
                     abbreDatabaseAry.filter((obj) => {
-                         return obj.full.toLowerCase().replace(/./g, "") == exsistedMatchObj.full.toLowerCase().replace(/./g, "");
+                         return obj.full.toLowerCase().replace(/\./g, "") == full.toLowerCase().replace(/\./g, "");
                     }).length == 0
                ) {
                     //待補充資料庫中有多筆不同資料時的處理
-                    newAbbreToUpdateAry.push(mainAbbreList_filtered[i] + " = " + full);
+                    console.log("newData");
+                    newAbbreToUpdateAry.push(exsistedMatchObj);
                }
+               console.log(newAbbreToUpdateAry);
           } else if (databaseMatchObjAry != 0) {
                full = databaseMatchObjAry[0].full;
-               unmatchedList.push(mainAbbreList_filtered[i] + " = " + full);
-               databaseRefedList.push(mainAbbreList_filtered[i] + " = " + full);
+               unmatchedList.push(mainAbbreList_filtered[i] + format_1 + full);
+               databaseRefedList.push(mainAbbreList_filtered[i] + format_1 + full);
           } else {
-               unmatchedList.push(mainAbbreList_filtered[i] + " = ");
+               unmatchedList.push(mainAbbreList_filtered[i] + format_1);
                full = "_______________";
           }
 
-          mainAbbreList_matched.push(mainAbbreList_filtered[i] + " = " + full);
+          mainAbbreList_matched.push(mainAbbreList_filtered[i] + format_1 + full);
      }
 
      let suspectList_filtered = [];
@@ -778,24 +797,24 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
                     }
                }
                if (rematchFail) {
-                    unusedRefedList.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
+                    unusedRefedList.push(excistedAbbreList_ObjedAry[i].abbre + format_1 + excistedAbbreList_ObjedAry[i].full);
                     continue;
                } else {
-                    mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
+                    mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + format_1 + excistedAbbreList_ObjedAry[i].full);
                     tmpRematchAry.sort();
                     for (let k = 0; k < tmpRematchAry[i]; k++) {
                          suspectList_filtered.splice(tmpRematchAry.pop(), 1);
                     }
                }
           } else if (suspectList_filtered.indexOf(excistedAbbreList_ObjedAry[i].abbre) != -1) {
-               mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
+               mainAbbreList_matched.push(excistedAbbreList_ObjedAry[i].abbre + format_1 + excistedAbbreList_ObjedAry[i].full);
                suspectList_filtered.splice(suspectList_filtered.indexOf(excistedAbbreList_ObjedAry[i].abbre), 1);
           } else {
-               unusedRefedList.push(excistedAbbreList_ObjedAry[i].abbre + " = " + excistedAbbreList_ObjedAry[i].full);
+               unusedRefedList.push(excistedAbbreList_ObjedAry[i].abbre + format_1 + excistedAbbreList_ObjedAry[i].full);
           }
      }
 
-     let arraysToSort = [mainAbbreList_matched, unusedRefedList, suspectList_filtered, unmatchedList, databaseRefedList, newAbbreToUpdateAry];
+     let arraysToSort = [mainAbbreList_matched, unusedRefedList, suspectList_filtered, unmatchedList, databaseRefedList];
 
      arraysToSort.forEach((element) => {
           element.sort(function compare(a, b) {
@@ -807,12 +826,12 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
           });
      });
 
-     let mergedMatchedList = mainAbbreList_matched.join("; ").toString();
-     let mergedUnmatchedList = unmatchedList.join("; ").toString();
-     let mergedUnusedRefedList = unusedRefedList.join("; ").toString();
-     let mergedDatabaseRefedList = databaseRefedList.join("; ").toString();
-     let mergedSuspectList = suspectList_filtered.join("; ").toString();
-     let newAbbreToUpdateList = newAbbreToUpdateAry.join("; ").toString();
+     let mergedMatchedList = mainAbbreList_matched.join(format_2).toString();
+     let mergedUnmatchedList = unmatchedList.join(format_2).toString();
+     let mergedUnusedRefedList = unusedRefedList.join(format_2).toString();
+     let mergedDatabaseRefedList = databaseRefedList.join(format_2).toString();
+     let mergedSuspectList = suspectList_filtered.join(format_2).toString();
+     // let newAbbreToUpdateList = newAbbreToUpdateAry.join(format_2).toString();
      console.log(newAbbreToUpdateAry);
 
      let saveString = mergedMatchedList + "\r\r縮寫表清單:\r" + mergedMatchedList.replace(/; /g, "\r") + "\r\r";
@@ -828,19 +847,23 @@ async function outputAbbreOutcome(excistedAbbreList, mainAbbreList, suspectList)
      if (mergedSuspectList != "") {
           saveString += "\r\r\r\r疑似縮寫字:\r" + mergedSuspectList;
      }
-     newAbbreToUpdateAry = [];
-     excistedAbbreList_ObjedAry.forEach((obj) => {
-          let databaseMatchObj = abbreDatabaseAry.filter((databaseObj) => {
-               return obj.full.toLowerCase == databaseObj.full.toLowerCase && obj.abbre.toLowerCase == databaseObj.abbre.toLowerCase;
-          });
-          if (databaseMatchObj) {
-          } else if (obj.abbre.match(/[\u4e00-\u9fa5]/) || obj.full.match(/[\u4e00-\u9fa5]/)) {
-          } else {
-               newAbbreToUpdateAry.push(obj);
-               databaseObj.push(obj);
-          }
-     });
+     // newAbbreToUpdateAry = [];
+     // excistedAbbreList_ObjedAry.forEach((obj) => {
+     //      let databaseMatchObj = abbreDatabaseAry.filter((databaseObj) => {
+     //           return (
+     //                obj.full.toLowerCase.replace(/\./g, "") == databaseObj.full.toLowerCase.replace(/\./g, "") &&
+     //                obj.abbre.toLowerCase.replace(/\./g, "") == databaseObj.abbre.toLowerCase.replace(/\./g, "")
+     //           );
+     //      });
+     //      if (databaseMatchObj) {
+     //      } else if (obj.abbre.match(/[\u4e00-\u9fa5]/) || obj.full.match(/[\u4e00-\u9fa5]/)) {
+     //      } else {
+     //           newAbbreToUpdateAry.push(obj);
+     //           databaseObj.push(obj);
+     //      }
+     // });
      console.log("N " + newAbbreToUpdateAry);
+     console.log(JSON.stringify(newAbbreToUpdateAry));
 
      if (newAbbreToUpdateAry.length != 0) {
           const url = "https://script.google.com/macros/s/AKfycbzy7Cb1wGvFfpTS_1tJ_eh1USkdbu2RTnP__uBLrDoskBkoczWOTlEfk7bqkXi1RIkI/exec?text=" + JSON.stringify(newAbbreToUpdateAry);

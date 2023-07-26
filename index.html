@@ -50,7 +50,7 @@
                <div class="col">
                     <button
                          type="button"
-                         class="btn btn-dark btn-sm col w-100"
+                         class="btn btn-dark btn-sm col w-100 h-100"
                          data-bs-toggle="tooltip"
                          data-bs-placement="top"
                          data-bs-html="true"
@@ -71,11 +71,11 @@
                <div class="col">
                     <button
                          type="button"
-                         class="btn btn-dark btn-sm col w-100"
+                         class="btn btn-dark btn-sm col w-100 h-100"
                          data-bs-toggle="tooltip"
                          data-bs-placement="top"
                          data-bs-html="true"
-                         title="將選取的物件納入排除紀錄，後續在清查縮寫時將過他們</br> [Alt] 將選取物件自紀錄移除</br>[Ctrl+Alt+Shift] 清空排除物件紀錄"
+                         title="將選取的物件納入排除紀錄，後續在清查縮寫時將略過他們</br> [Alt] 將選取物件自紀錄移除</br>[Ctrl+Alt+Shift] 清空排除物件紀錄"
                          onclick="registExcludeObj()"
                     >
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
@@ -88,7 +88,15 @@
                     </button>
                </div>
                <div class="col">
-                    <button type="button" class="btn btn-dark btn-sm col w-100" onclick="registTableObj()">
+                    <button
+                         type="button"
+                         class="btn btn-dark btn-sm col w-100 h-100"
+                         data-bs-toggle="tooltip"
+                         data-bs-placement="top"
+                         data-bs-html="true"
+                         title="將選取的表格物件納入排除紀錄，後續在清查縮寫時將納入他們</br> [Alt] 將選取物件自紀錄移除</br>[Ctrl+Alt+Shift] 清空表格物件紀錄"
+                         onclick="registTableObj()"
+                    >
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-table" viewBox="0 0 16 16">
                               <path
                                    d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"
@@ -103,7 +111,7 @@
           </div>
           <div class="row gx-1 w-100 mb-1">
                <div class="col">
-                    <button type="button" class="btn btn-primary btn-sm mb-1 w-100" onclick="listAbbreofActivePage()">
+                    <button type="button" class="btn btn-primary btn-sm mb-1 w-100 h-100" onclick="listAbbreofActivePage()">
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-medical" viewBox="0 0 16 16">
                               <path
                                    d="M8.5 4.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L7 6l-.549.317a.5.5 0 1 0 .5.866l.549-.317V7.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L9 6l.549-.317a.5.5 0 1 0-.5-.866l-.549.317V4.5zM5.5 9a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"
@@ -114,7 +122,7 @@
                     </button>
                </div>
                <div class="col">
-                    <button type="button" class="btn btn-primary btn-sm mb-1 w-100" onclick="sortAbbreofActivePage()">
+                    <button type="button" class="btn btn-primary btn-sm mb-1 w-100 h-100" onclick="sortAbbreofActivePage()">
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-alpha-down" viewBox="0 0 16 16">
                               <path fill-rule="evenodd" d="M10.082 5.629 9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371h-1.781zm1.57-.785L11 2.687h-.047l-.652 2.157h1.351z" />
                               <path
@@ -125,7 +133,7 @@
                     </button>
                </div>
                <div class="col">
-                    <button type="button" class="btn btn-primary btn-sm mb-1 w-100" onclick="listAbbreofAllPages()">
+                    <button type="button" class="btn btn-primary btn-sm mb-1 w-100 h-100" onclick="listAbbreofAllPages()">
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 16 16">
                               <path
                                    d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"
@@ -140,6 +148,34 @@
                     <button type="button" class="btn btn-secondary btn-sm mb-1 w-100" onclick="sayHello()">test</button>
                </div>
           </div> -->
+          <div class="row gx-1 w-100 mb-1">
+               <div class="input-group input-group-sm" style="font-size: 14px">
+                    <label class="form-label mb-0 px-1 py-2">分界格式: </label>
+                    <!-- <div class="form-check-inline"> -->
+                    <label class="px-1 py-2">AF</label>
+                    <input
+                         type="text"
+                         class="form-control form-control-sm mx-1"
+                         name="abbre_format_1"
+                         id="abbre_format_1"
+                         autocomplete="off"
+                         style="height: 18px; flex: none; width: 2.5em"
+                         value=" = "
+                    />
+
+                    <label class="px-1 py-2">atrial fibrillation</label>
+                    <input
+                         type="text"
+                         class="form-control form-control-sm mx-1"
+                         name="abbre_format_2"
+                         id="abbre_format_2"
+                         autocomplete="off"
+                         style="height: 18px; flex: none; width: 2.5em"
+                         value="; "
+                    />
+                    <label class="px-1 py-2">CKD...</label>
+               </div>
+          </div>
           <div class="form-control f12 h60plus selfScroll" contenteditable="true" id="outcome">(縮寫表輸出區)</div>
           <div class="w-100"></div>
           <div id="" class="nav justify-content-end mt-2 gx-2 container">
