@@ -1,5 +1,5 @@
 Office.onReady();
-let abbreDatabaseAry = [];
+let abbreDatabaseAry = [{ abbre: "", full: "" }];
 let logDataExsit = false;
 let logTags;
 let abbreLogTag, excludeLogTag, tableLogTag;
@@ -995,6 +995,9 @@ function init() {
                console.log(abbreDatabaseAry);
 
                databaseStatus.innerHTML = databaseLoadedContent;
+               document.getElementById("abbre_func1").disabled = false;
+               document.getElementById("abbre_func2").disabled = false;
+               document.getElementById("abbre_func3").disabled = false;
                // databaseStatus.disabled = false;
 
                document.getElementById("notificationContents").innerText = "已載入 " + abbreDatabaseAry.length + " 筆縮寫";
