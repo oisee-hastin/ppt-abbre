@@ -908,9 +908,11 @@ function filtAbbreRefToAbbreAry(abbreRefContents) {
           }
      }
 
-     outComeAry = outComeAry.join("; ").split(/[\s ]*;[\s ]*/);
+     outComeAry = outComeAry.join("; ").split(/[\s ]*[;；]+[\s ]*/);
      outComeAry = outComeAry.filter(function (element, index, self) {
-          return self.indexOf(element) === index;
+          if (element != "") {
+               return self.indexOf(element) === index;
+          }
      });
 
      return outComeAry;
